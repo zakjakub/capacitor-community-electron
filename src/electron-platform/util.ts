@@ -106,7 +106,9 @@ export function setupCapacitorElectronPlugins(): void {
         console.log(`-> Loaded class: ${classKey}`);
 
         if (typeof constructor !== 'function') {
-          console.error(`Plugin ${pluginName} does not export a valid constructor.`);
+          console.error(
+            `Plugin ${pluginName} does not export a valid constructor (${typeof constructor} found, expected function).`
+          );
           return;
         }
 
