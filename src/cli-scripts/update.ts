@@ -68,6 +68,8 @@ export async function doUpdate(taskInfoMessageProvider: TaskInfoProvider): Promi
             if (pkg.type === 'module' && existsSync(cjsEntryPoint)) {
               console.log(`INFO: Plugin ${plugin.name} is an ES Module, using CJS entry point.`);
               resolvedPath = cjsEntryPoint;
+            } else {
+              console.log(`INFO: Plugin ${plugin.name} is NOT an ES Module, NOT using CJS entry point.`);
             }
           }
         } catch (err) {
