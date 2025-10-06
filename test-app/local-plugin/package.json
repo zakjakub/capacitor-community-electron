@@ -1,0 +1,14 @@
+{
+  "name": "local-plugin",
+  "version": "1.0.0",
+  "description": "A local plugin for testing.",
+  "main": "index.js",
+  "capacitor": {
+    "electron": {
+      "src": "electron"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

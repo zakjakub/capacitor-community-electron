@@ -1,2 +1,4 @@
-dist
-node_modules
+test-app/
+dist/
+node_modules/
+*.mjs

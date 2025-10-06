@@ -1,11 +1,15 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: './tsconfig.json',
+  },
   plugins: ['@typescript-eslint', 'import'],
   extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier', 'plugin:import/typescript'],
   rules: {
     'no-constant-condition': 'off',
     '@typescript-eslint/no-this-alias': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/explicit-module-boundary-types': ['error', { allowArgumentsExplicitlyTypedAsAny: true }],
     '@typescript-eslint/array-type': 'error',
     '@typescript-eslint/consistent-type-assertions': 'error',

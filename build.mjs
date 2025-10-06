@@ -1,9 +1,8 @@
 /* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-var-requires */
-const esbuild = require('esbuild');
-const { readdirSync } = require('fs');
-const { join } = require('path');
-const tar = require('tar');
+import esbuild from 'esbuild';
+import { readdirSync } from 'fs';
+import { join } from 'path';
+import tar from 'tar';
 
 async function packTemplate() {
   const templateSrc = join('./', 'src', 'electron-platform-template');
@@ -22,7 +21,7 @@ async function buildCliScrpts() {
     bundle: true,
     outfile: 'dist/cli-scripts/cap-scripts.js',
     platform: 'node',
-    target: 'node16',
+    target: 'node20',
     minify: true,
     external: ['child_process', 'fs', 'path', 'fs-extra', 'crypto', 'chalk', 'ora'],
   });
@@ -34,7 +33,7 @@ async function buildPlatformCore() {
     bundle: true,
     outfile: 'dist/core/index.js',
     platform: 'node',
-    target: 'node16',
+    target: 'node20',
     minify: true,
     external: ['electron', 'fs', 'path', 'mime-types', 'events'],
   });
