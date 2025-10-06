@@ -37,7 +37,7 @@ async function loadPlugins() {
             !!Object.values(listeners).find((listenerObj) => listenerObj.type === type);
 
           Object.assign(contextApi[classKey], {
-            async addListener(type: string, callback: (...args: any[]) => void) {
+            addListener(type: string, callback: (...args: any[]) => void) {
               const id = randomId();
 
               // Deduplicate events
@@ -50,10 +50,10 @@ async function loadPlugins() {
               ipcRenderer.addListener(`event-${classKey}-${type}`, eventHandler);
               listeners[id] = { type, listener: eventHandler };
 
-              return Promise.resolve({
-                async remove() {
+              return {
+                remove: () => {
                   if (!listeners[id]) {
-                    return Promise.resolve();
+                    throw new Error('Invalid id');
                   }
 
                   const { type, listener } = listeners[id];
@@ -65,11 +65,25 @@ async function loadPlugins() {
                   if (!listenersOfTypeExist(type)) {
                     ipcRenderer.send(`event-remove-${classKey}-${type}`);
                   }
-                  return Promise.resolve();
                 },
-              });
+              };
             },
-            async removeAllListeners(type?: string) {
+            removeListener(id: string) {
+              if (!listeners[id]) {
+                throw new Error('Invalid id');
+              }
+
+              const { type, listener } = listeners[id];
+
+              ipcRenderer.removeListener(`event-${classKey}-${type}`, listener);
+
+              delete listeners[id];
+
+              if (!listenersOfTypeExist(type)) {
+                ipcRenderer.send(`event-remove-${classKey}-${type}`);
+              }
+            },
+            removeAllListeners(type: string) {
               Object.entries(listeners).forEach(([id, listenerObj]) => {
                 if (!type || listenerObj.type === type) {
                   ipcRenderer.removeListener(`event-${classKey}-${listenerObj.type}`, listenerObj.listener);
@@ -77,7 +91,6 @@ async function loadPlugins() {
                   delete listeners[id];
                 }
               });
-              return Promise.resolve();
             },
           });
         }

@@ -1,0 +1,21 @@
+{
+  "name": "test-app",
+  "version": "1.0.0",
+  "description": "A test application for the Capacitor Electron library.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/dialog": "^7.0.2"
+  },
+  "devDependencies": {
+    "@capacitor-community/electron": "file:..",
+    "@capacitor/cli": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "local-plugin": "file:./local-plugin"
+  }
+}
