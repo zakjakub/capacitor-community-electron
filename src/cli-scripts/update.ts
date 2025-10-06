@@ -1,4 +1,4 @@
-import { existsSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { copySync } from 'fs-extra';
 import { isAbsolute, join, relative, resolve } from 'path';
 
@@ -39,22 +39,44 @@ export async function doUpdate(taskInfoMessageProvider: TaskInfoProvider): Promi
     .filter((plugin: Plugin | null): plugin is Plugin => plugin !== null)
     .map((plugin: Plugin) => {
       const installStr: string = (() => {
-        // Consider cases when package is not installed via npm
+        // ... (existing installStr logic remains the same) ...
         if (deps[plugin?.id]) {
           if (deps[plugin.id].startsWith('file:')) {
             const pkgPath = deps[plugin?.id].replace(/^file:/, '');
             const pkgAbsPath = isAbsolute(pkgPath) ? pkgPath : resolve(usersProjectDir, pkgPath);
-
-            return relative(join(usersProjectDir, 'electron'), pkgAbsPath); // try to use relative path as much as possible
+            return relative(join(usersProjectDir, 'electron'), pkgAbsPath);
           } else if (deps[plugin.id].match(/^(https?|git):/)) {
             return deps[plugin.id];
           }
         }
-
         return `${plugin?.id}@${plugin?.version}`;
       })();
 
-      const path = resolveElectronPlugin(plugin);
+      // --- NEW LOGIC STARTS HERE ---
+      let resolvedPath = resolveElectronPlugin(plugin);
+      if (resolvedPath) {
+        try {
+          // Assumes plugin.path from getPlugins is the root directory of the plugin package
+          const packageJsonPath = join(plugin.rootPath, 'package.json');
+          if (existsSync(packageJsonPath)) {
+            const pkg = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+
+            // Define the path to the CommonJS version of the plugin
+            const cjsEntryPoint = join(plugin.rootPath, 'electron', 'dist', 'plugin.cjs.js');
+
+            // If "type" is "module" and a .cjs.js file exists, use it instead.
+            if (pkg.type === 'module' && existsSync(cjsEntryPoint)) {
+              console.log(`INFO: Plugin ${plugin.name} is an ES Module, using CJS entry point.`);
+              resolvedPath = cjsEntryPoint;
+            }
+          }
+        } catch (err) {
+          console.error(`WARN: Could not parse package.json for ${plugin.name}:`, err);
+        }
+      }
+      // --- NEW LOGIC ENDS HERE ---
+
+      const path = resolvedPath;
       const name = plugin?.name;
       const id = plugin?.id;
       return { name, path, installStr, id };
