@@ -1,8 +1,12 @@
-import { setupElectronDeepLinking } from './ElectronDeepLinking';
-import { CapacitorSplashScreen } from './ElectronSplashScreen';
-import { CapElectronEventEmitter, getCapacitorElectronConfig, setupCapacitorElectronPlugins } from './util';
-
-export * from './definitions';
+import {setupElectronDeepLinking} from './ElectronDeepLinking';
+import {CapacitorSplashScreen} from './ElectronSplashScreen';
+import {
+    CapacitorElectronConfig,
+    ElectronCapacitorDeeplinkingConfig,
+    ElectronConfig,
+    SplashOptions,
+} from './definitions';
+import {CapElectronEventEmitter, getCapacitorElectronConfig, setupCapacitorElectronPlugins} from './util';
 
 export {
   CapacitorSplashScreen,
@@ -10,4 +14,8 @@ export {
   getCapacitorElectronConfig,
   setupCapacitorElectronPlugins,
   setupElectronDeepLinking,
+  SplashOptions,
+  ElectronConfig,
+  CapacitorElectronConfig,
+  ElectronCapacitorDeeplinkingConfig,
 };
