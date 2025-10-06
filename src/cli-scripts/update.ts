@@ -1,8 +1,8 @@
 import { existsSync, writeFileSync } from 'fs';
 import { copySync } from 'fs-extra';
-import { join, isAbsolute, resolve, relative } from 'path';
+import { isAbsolute, join, relative, resolve } from 'path';
 
-import type { TaskInfoProvider, Plugin } from './common';
+import type { Plugin, TaskInfoProvider } from './common';
 import { getPlugins, readJSON, resolveElectronPlugin, runExec } from './common';
 
 export async function doUpdate(taskInfoMessageProvider: TaskInfoProvider): Promise<void> {

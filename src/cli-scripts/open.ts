@@ -1,7 +1,7 @@
 import { join } from 'path';
 
 import type { TaskInfoProvider } from './common';
-import { runExec, errorLog } from './common';
+import { errorLog, runExec } from './common';
 
 export async function doOpen(taskInfoMessageProvider: TaskInfoProvider): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

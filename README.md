@@ -20,10 +20,15 @@ Bring your Capacitor ⚡ apps to the desktop with Electron! 🖥
 </p>
 
 ## ⚠ Version 4 or Above Info
+
 - You will need version `5.4.0`+ of capacitor.
-- The template and inner workings have changed a lot, a migration guide will be done but for now creating a new project to tinker with before migrating main projects is a good idea.
-- Plugins from previous versions `@capacitor-community/electron` will not function in V4 or above, however all web plugins will continue to function as normal.
-- V4 and later comes with no plugins out of the box. Instead V4 and later and above follow Capacitor in seperated plugins, see [Plugin Examples Directory](https://github.com/capacitor-community/electron/tree/main/plugin-examples) for examples.
+- The template and inner workings have changed a lot, a migration guide will be done but for now creating a new project
+  to tinker with before migrating main projects is a good idea.
+- Plugins from previous versions `@capacitor-community/electron` will not function in V4 or above, however all web
+  plugins will continue to function as normal.
+- V4 and later comes with no plugins out of the box. Instead V4 and later and above follow Capacitor in seperated
+  plugins, see [Plugin Examples Directory](https://github.com/capacitor-community/electron/tree/main/plugin-examples)
+  for examples.
 
 ## 📖 Documentation:
 
@@ -31,16 +36,18 @@ Bring your Capacitor ⚡ apps to the desktop with Electron! 🖥
 
 ## 🔐 Security
 
-While this platform strives to be inline with current secure practices, there are things outside of this platforms control. Please take the time to read through the [security checklist](https://www.electronjs.org/docs/tutorial/security#checklist-security-recommendations) the electron team has created to keep your application as safe and secure as you possibly can.
+While this platform strives to be inline with current secure practices, there are things outside of this platforms
+control. Please take the time to read through
+the [security checklist](https://www.electronjs.org/docs/tutorial/security#checklist-security-recommendations) the
+electron team has created to keep your application as safe and secure as you possibly can.
 
-## 🛠 Maintainers 
+## 🛠 Maintainers
 
 | Maintainer       | GitHub                                  | Social                                    | Sponsoring Company | Primary |
-| ---------------- | --------------------------------------- | ----------------------------------------- | ------------------ | ------- |
+|------------------|-----------------------------------------|-------------------------------------------|--------------------|---------|
 | Mike Summerfeldt | [IT-MikeS](https://github.com/IT-MikeS) | [@IT_MikeS](https://twitter.com/IT_MikeS) | Volunteer          | Yes     |
 
-
-## ✨ Contributors 
+## ✨ Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->

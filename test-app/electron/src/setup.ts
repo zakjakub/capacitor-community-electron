@@ -1,12 +1,12 @@
 import type { CapacitorElectronConfig } from '@capacitor-community/electron';
 import {
-  CapElectronEventEmitter,
   CapacitorSplashScreen,
+  CapElectronEventEmitter,
   setupCapacitorElectronPlugins,
 } from '@capacitor-community/electron';
 import chokidar from 'chokidar';
 import type { MenuItemConstructorOptions } from 'electron';
-import { app, BrowserWindow, Menu, MenuItem, nativeImage, Tray, session } from 'electron';
+import { app, BrowserWindow, Menu, MenuItem, nativeImage, session, Tray } from 'electron';
 import electronIsDev from 'electron-is-dev';
 import electronServe from 'electron-serve';
 import windowStateKeeper from 'electron-window-state';
@@ -81,11 +81,6 @@ export class ElectronCapacitorApp {
       directory: join(app.getAppPath(), 'app'),
       scheme: this.customScheme,
     });
-  }
-
-  // Helper function to load in the app.
-  private async loadMainWindow(thisRef: any) {
-    await thisRef.loadWebApp(thisRef.MainWindow);
   }
 
   // Expose the mainWindow ref for use outside of the class.
@@ -213,6 +208,11 @@ export class ElectronCapacitorApp {
         CapElectronEventEmitter.emit('CAPELECTRON_DeeplinkListenerInitialized', '');
       }, 400);
     });
+  }
+
+  // Helper function to load in the app.
+  private async loadMainWindow(thisRef: any) {
+    await thisRef.loadWebApp(thisRef.MainWindow);
   }
 }
 

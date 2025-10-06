@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 import chalk from 'chalk';
 import { exec } from 'child_process';
 import { createHash } from 'crypto';
-import { readFileSync, existsSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import type { Ora } from 'ora';
 import ora from 'ora';
 import { dirname, join, parse, resolve } from 'path';
