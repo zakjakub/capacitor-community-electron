@@ -89,51 +89,56 @@ const pluginInstanceRegistry: { [pluginClassName: string]: { [functionName: stri
 export function setupCapacitorElectronPlugins(): void {
   console.log('in setupCapacitorElectronPlugins');
   const rtPluginsPath = join(app.getAppPath(), 'build', 'src', 'rt', 'electron-plugins.js');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const plugins: {
-    [pluginName: string]: { [className: string]: any };
-  } = require(rtPluginsPath);
+  // The plugins object will look like: { Plugins: { CapacitorNodejs: () => import(...) } }
+  const pluginLoaders = require(rtPluginsPath).Plugins;
 
-  console.log(plugins);
-  for (const pluginKey of Object.keys(plugins)) {
-    console.log(`${pluginKey}`);
-    for (const classKey of Object.keys(plugins[pluginKey]).filter((className) => className !== 'default')) {
-      console.log(`-> ${classKey}`);
+  console.log(pluginLoaders);
+  for (const pluginName in pluginLoaders) {
+    console.log(`Loading plugin: ${pluginName}`);
+    const loader = pluginLoaders[pluginName];
 
-      if (!pluginInstanceRegistry[classKey]) {
-        pluginInstanceRegistry[classKey] = new plugins[pluginKey][classKey](deepClone(config as Record<string, any>));
-      }
+    // Execute the loader function which returns a promise
+    loader()
+      .then((module: any) => {
+        // Check for ES module default export
+        const constructor = module.default || module;
+        const classKey = constructor.name; // Get the class name (e.g., "CapacitorNodejs")
+        console.log(`-> Loaded class: ${classKey}`);
 
-      const functionList = Object.getOwnPropertyNames(plugins[pluginKey][classKey].prototype).filter(
-        (v) => v !== 'constructor'
-      );
+        if (typeof constructor !== 'function') {
+          console.error(`Plugin ${pluginName} does not export a valid constructor.`);
+          return;
+        }
 
-      for (const functionName of functionList) {
-        console.log(`--> ${functionName}`);
+        if (!pluginInstanceRegistry[classKey]) {
+          pluginInstanceRegistry[classKey] = new constructor(deepClone(config as Record<string, any>));
+        }
 
-        ipcMain.handle(`${classKey}-${functionName}`, (_event, ...args) => {
-          console.log(`called ipcMain.handle: ${classKey}-${functionName}`);
-          const pluginRef = pluginInstanceRegistry[classKey];
+        const functionList = Object.getOwnPropertyNames(constructor.prototype).filter((v) => v !== 'constructor');
 
-          return pluginRef[functionName](...args);
-        });
-      }
-
-      // For every Plugin which extends EventEmitter, start listening for 'event-add-{classKey}'
-      if (pluginInstanceRegistry[classKey] instanceof EventEmitter) {
-        // Listen for calls about adding event listeners (types) to this particular class
-        // This is only called by renderer when the first addListener of a particular type is requested
-        ipcMain.on(`event-add-${classKey}`, (event, type) => {
-          const eventHandler = (...data: any[]) => event.sender.send(`event-${classKey}-${type}`, ...data);
-
-          (pluginInstanceRegistry[classKey] as EventEmitter).addListener(type, eventHandler);
-
-          ipcMain.once(`event-remove-${classKey}-${type}`, () => {
-            (pluginInstanceRegistry[classKey] as EventEmitter).removeListener(type, eventHandler);
+        for (const functionName of functionList) {
+          console.log(`--> Registering method: ${functionName}`);
+          ipcMain.handle(`${classKey}-${functionName}`, (_event, ...args) => {
+            console.log(`called ipcMain.handle: ${classKey}-${functionName}`);
+            const pluginRef = pluginInstanceRegistry[classKey];
+            return pluginRef[functionName](...args);
           });
-        });
-      }
-    }
+        }
+
+        // For every Plugin which extends EventEmitter, set up event listeners
+        if (pluginInstanceRegistry[classKey] instanceof EventEmitter) {
+          ipcMain.on(`event-add-${classKey}`, (event, type) => {
+            const eventHandler = (...data: any[]) => event.sender.send(`event-${classKey}-${type}`, ...data);
+            (pluginInstanceRegistry[classKey] as EventEmitter).addListener(type, eventHandler);
+            ipcMain.once(`event-remove-${classKey}-${type}`, () => {
+              (pluginInstanceRegistry[classKey] as EventEmitter).removeListener(type, eventHandler);
+            });
+          });
+        }
+      })
+      .catch((err) => {
+        console.error(`Error loading plugin ${pluginName}:`, err);
+      });
   }
 }
 
