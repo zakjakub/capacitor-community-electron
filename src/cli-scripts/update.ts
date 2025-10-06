@@ -65,11 +65,16 @@ export async function doUpdate(taskInfoMessageProvider: TaskInfoProvider): Promi
             const cjsEntryPoint = join(plugin.rootPath, 'electron', 'dist', 'plugin.cjs.js');
 
             // If "type" is "module" and a .cjs.js file exists, use it instead.
+
+            console.log(
+              `\nINFO: Plugin: ${plugin.name}; Plugin type: ${pkg.type}; Plugin CJS entrypoint: ${cjsEntryPoint}`
+            );
+
             if (pkg.type === 'module' && existsSync(cjsEntryPoint)) {
               console.log(`INFO: Plugin ${plugin.name} is an ES Module, using CJS entry point.`);
               resolvedPath = cjsEntryPoint;
             } else {
-              console.log(`INFO: Plugin ${plugin.name} is NOT an ES Module, NOT using CJS entry point.`);
+              console.log(`\nINFO: Plugin ${plugin.name} is NOT an ES Module, NOT using CJS entry point.`);
             }
           }
         } catch (err) {
